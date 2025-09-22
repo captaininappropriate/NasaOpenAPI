@@ -10,8 +10,8 @@ import database
 
 
 class ApiKeyDialog(QDialog):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.setWindowTitle("Enter API Key")
         self.resize(300, 100)
 

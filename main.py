@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (
 import apod
 import database
 from apikeydialog import ApiKeyDialog
+from marsroverphotos import MarsRoverPhotosDialog
 
 
 class MainWindow(QMainWindow):
@@ -45,8 +46,10 @@ class MainWindow(QMainWindow):
         # create a menu bar
         menubar = self.menuBar()
         file_menu = menubar.addMenu("File") # type: ignore
+        option_menu = menubar.addMenu("Options") # type: ignore
 
-        # API Key action
+        # API Key action for file menu
+        # api key action
         api_key_action = QAction("API Key", self)
         api_key_action.triggered.connect(self.open_api_key_dialog)
         file_menu.addAction(api_key_action) # type: ignore
@@ -55,6 +58,12 @@ class MainWindow(QMainWindow):
         close_action = QAction("Close", self)
         close_action.triggered.connect(self.close)
         file_menu.addAction(close_action) # type: ignore
+
+        # API Key action for option menu 
+        # Mars rover action
+        mars_photo_action = QAction("Mars Rover Photos", self)
+        mars_photo_action.triggered.connect(self.open_mars_rover_photo_dialog)
+        option_menu.addAction(mars_photo_action) # type: ignore
 
         # Status Bar to display status of API key
         self.statusBar().showMessage(self.get_api_key_status()) # type: ignore
@@ -70,6 +79,10 @@ class MainWindow(QMainWindow):
 
     def open_api_key_dialog(self):
         dialog = ApiKeyDialog()
+        dialog.exec()
+
+    def open_mars_rover_photo_dialog(self):
+        dialog = MarsRoverPhotosDialog()
         dialog.exec()
 
     # get the data from the apod api and present onto the main screen
