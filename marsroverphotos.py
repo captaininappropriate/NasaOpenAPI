@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
     QCalendarWidget,
     QListWidget,
     QLabel,
+    QPushButton,
 )
 import requests
 
@@ -14,25 +15,42 @@ class MarsRoverPhotosDialog(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle("Mars Rover Photos")
-        self.setMinimumSize(400, 400)
+        #self.setMinimumSize(400, 600)
 
-        # create layout
-        layout = QHBoxLayout()
+        # create layouts
+        h_layout = QHBoxLayout()
+        v_list_layout = QVBoxLayout() # QListQidget layout
+        v_layout = QVBoxLayout()
 
         # create widgets
         self.calendar = QCalendarWidget()
+        self.calendar.setFixedSize(200, 200)
         self.camera_selection_list = QListWidget()
+        self.camera_selection_list.setFixedSize(320, 135)
         self.rover_list = QListWidget()
+        self.rover_list.setFixedSize(320, 55)
+        self.submit_button = QPushButton("Submit")
+        self.submit_button.setFixedSize(100, 40)
+        self.results_label = QLabel("Results will go here")
         
         # add items to the lists
         # rover list
         self.rover_list.addItems(['Curiosity','Opportunity', 'Spirit'])
         self.rover_list.currentItemChanged.connect(self.update_camera_list)
 
-        layout.addWidget(self.calendar)
-        layout.addWidget(self.rover_list)
-        layout.addWidget(self.camera_selection_list)
-        self.setLayout(layout)
+        # configure the QListWidget layout
+        v_list_layout.addWidget(self.rover_list)
+        v_list_layout.addWidget(self.camera_selection_list)
+
+        # configure the primary horozontal layout
+        h_layout.addWidget(self.calendar)
+        h_layout.addLayout(v_list_layout)
+
+        # confiugre the layouts
+        v_layout.addLayout(h_layout)
+        v_layout.addWidget(self.submit_button)
+        v_layout.addWidget(self.results_label)
+        self.setLayout(v_layout)
         
         # initial list of items
         self.update_camera_list()

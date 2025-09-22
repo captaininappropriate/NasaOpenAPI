@@ -68,7 +68,7 @@ class MainWindow(QMainWindow):
         # Status Bar to display status of API key
         self.statusBar().showMessage(self.get_api_key_status()) # type: ignore
         self.get_apod_data()
-
+    
     # functions
     def get_api_key_status(self) -> str:
         """Check if API key exists and return appropriate status message."""
