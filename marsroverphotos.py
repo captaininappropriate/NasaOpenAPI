@@ -16,7 +16,7 @@ class MarsRoverPhotosDialog(QDialog):
 
         self.setWindowTitle("Mars Rover Photos")
 
-        # Dictionary for second QListWidget
+        # Dictionary for rover camera QListWidget
         self.rover_camera_dict = {
             "FHAZ": "Front Hazard Avoidance Camera",
             "RHAZ": "Rear Hazard Avoidance Camera",
@@ -93,7 +93,7 @@ class MarsRoverPhotosDialog(QDialog):
             self.result_label.setText("Please select items from both lists.")
             return
 
-        # Find dictionary key for selected value in list2
+        # Find dictionary key for selected value in rover camera list
         value = camera_list_item.text()
         key = [k for k, v in self.rover_camera_dict.items() if v == value][0]
 
