@@ -3,6 +3,9 @@ import sqlite3
 
 # create an initial database and setup the required table
 def init_db():
+    """
+    
+    """
     conn = sqlite3.connect("apikeys.db")
     c = conn.cursor()
     c.execute(
@@ -15,6 +18,9 @@ def init_db():
 
 
 def save_api_key(api_key: str):
+    """
+    
+    """
     conn = sqlite3.connect("apikeys.db")
     c = conn.cursor()
     # Replace any old key with the new one
@@ -25,6 +31,9 @@ def save_api_key(api_key: str):
 
 
 def load_api_key() -> str | None:
+    """
+    
+    """
     conn = sqlite3.connect("apikeys.db")
     c = conn.cursor()
     # obtain the current key and return to the calling function

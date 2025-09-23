@@ -13,6 +13,9 @@ from database import load_api_key
 
 
 class MarsRoverPhotosDialog(QDialog):
+    """
+    
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
 

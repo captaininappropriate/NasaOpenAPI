@@ -3,6 +3,9 @@ import requests
 
 
 def get_apod_data(key: str):
+    """
+    
+    """
     api_key = key
     url = f"https://api.nasa.gov/planetary/apod?api_key={api_key}"
     response = requests.get(url)
@@ -17,6 +20,9 @@ def get_apod_data(key: str):
     return apod_details 
 
 def get_apod_image(url: str) -> QPixmap:
+        """
+        
+        """
         # Download image data
         response = requests.get(url)
         response.raise_for_status()  # raise an error if download fails

@@ -14,6 +14,11 @@ from marsroverphotos import MarsRoverPhotosDialog
 
 
 class MainWindow(QMainWindow):
+    """_summary_
+
+    Args:
+        QMainWindow (_type_): _description_
+    """
     def __init__(self):
         super().__init__()
         self.setWindowTitle("NASA Open API")
@@ -78,15 +83,24 @@ class MainWindow(QMainWindow):
         return "API key not set"
 
     def open_api_key_dialog(self):
+        """
+
+        """
         dialog = ApiKeyDialog()
         dialog.exec()
 
     def open_mars_rover_photo_dialog(self):
+        """
+        
+        """
         dialog = MarsRoverPhotosDialog()
         dialog.exec()
 
     # get the data from the apod api and present onto the main screen
     def get_apod_data(self):
+        """
+        
+        """
         api_key = database.load_api_key()
         if api_key:
             try:

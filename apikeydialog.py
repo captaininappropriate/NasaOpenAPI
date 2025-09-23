@@ -10,6 +10,9 @@ import database
 
 
 class ApiKeyDialog(QDialog):
+    """
+    
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Enter API Key")
@@ -36,6 +39,9 @@ class ApiKeyDialog(QDialog):
 
     # get the user input API key and store it in the database
     def save_key(self):
+        """
+        
+        """
         api_key = self.input.text().strip()
         if api_key:
             database.save_api_key(api_key)
