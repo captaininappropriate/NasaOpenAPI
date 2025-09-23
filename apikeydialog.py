@@ -1,10 +1,10 @@
 from PyQt6.QtWidgets import (
-    QDialog, 
-    QVBoxLayout, 
-    QLineEdit, 
-    QPushButton, 
-    QLabel, 
-    QMessageBox
+    QDialog,
+    QVBoxLayout,
+    QLineEdit,
+    QPushButton,
+    QLabel,
+    QMessageBox,
 )
 import database
 

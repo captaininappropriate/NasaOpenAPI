@@ -1,8 +1,8 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
-    QApplication, 
-    QMainWindow, 
+    QApplication,
+    QMainWindow,
     QWidget,
     QVBoxLayout,
     QLabel,
@@ -45,30 +45,30 @@ class MainWindow(QMainWindow):
 
         # create a menu bar
         menubar = self.menuBar()
-        file_menu = menubar.addMenu("File") # type: ignore
-        option_menu = menubar.addMenu("Options") # type: ignore
+        file_menu = menubar.addMenu("File")  # type: ignore
+        option_menu = menubar.addMenu("Options")  # type: ignore
 
         # API Key action for file menu
         # api key action
         api_key_action = QAction("API Key", self)
         api_key_action.triggered.connect(self.open_api_key_dialog)
-        file_menu.addAction(api_key_action) # type: ignore
+        file_menu.addAction(api_key_action)  # type: ignore
 
         # close action
         close_action = QAction("Close", self)
         close_action.triggered.connect(self.close)
-        file_menu.addAction(close_action) # type: ignore
+        file_menu.addAction(close_action)  # type: ignore
 
-        # API Key action for option menu 
+        # API Key action for option menu
         # Mars rover action
         mars_photo_action = QAction("Mars Rover Photos", self)
         mars_photo_action.triggered.connect(self.open_mars_rover_photo_dialog)
-        option_menu.addAction(mars_photo_action) # type: ignore
+        option_menu.addAction(mars_photo_action)  # type: ignore
 
         # Status Bar to display status of API key
-        self.statusBar().showMessage(self.get_api_key_status()) # type: ignore
+        self.statusBar().showMessage(self.get_api_key_status())  # type: ignore
         self.get_apod_data()
-    
+
     # functions
     def get_api_key_status(self) -> str:
         """Check if API key exists and return appropriate status message."""
@@ -92,17 +92,19 @@ class MainWindow(QMainWindow):
             try:
                 data = apod.get_apod_data(api_key)
                 if data:
-                    # set the title and description of the APOD image 
+                    # set the title and description of the APOD image
                     title = f"{data['title']}"
                     self.apod_title.setText(title)
                     explanation = f"{data['explanation']}"
                     self.apod_description.setText(explanation)
                     # extract the APOD image url and pass back to the apod module for processing
-                    apod_image_url = data['image_url']
+                    apod_image_url = data["image_url"]
                     apod_image = apod.get_apod_image(apod_image_url)
                     # place the image in the label
                     self.apod_image.setPixmap(apod_image)
-                    self.apod_image.setScaledContents(True) # scale when window is resized
+                    self.apod_image.setScaledContents(
+                        True
+                    )  # scale when window is resized
             except ValueError as e:
                 self.apod_description.setText(f"Error: {e}")
         else:

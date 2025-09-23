@@ -1,13 +1,15 @@
 from PyQt6.QtWidgets import (
-    QDialog, 
+    QDialog,
     QVBoxLayout,
     QHBoxLayout,
-    QCalendarWidget, 
-    QListWidget, 
-    QPushButton, 
-    QLabel
+    QCalendarWidget,
+    QListWidget,
+    QPushButton,
+    QLabel,
 )
 from PyQt6.QtCore import QDate
+import requests
+from database import load_api_key
 
 
 class MarsRoverPhotosDialog(QDialog):
@@ -83,23 +85,44 @@ class MarsRoverPhotosDialog(QDialog):
             self.camera_list.addItem(self.rover_camera_dict[key])
 
     def get_selection(self):
-        """Get selected values and print result."""
-        date: QDate = self.calendar.selectedDate() # type: ignore
+        """Get selected values and call NASA API."""
+        date: QDate = self.calendar.selectedDate()  # type: ignore
         rover_list_item = self.rover_list.currentItem()
         camera_list_item = self.camera_list.currentItem()
 
-        # ensure user has select an item from both lists
         if not rover_list_item or not camera_list_item:
             self.result_label.setText("Please select items from both lists.")
             return
 
-        # Find dictionary key for selected value in rover camera list
+        # Find dictionary key for selected value in list2
         value = camera_list_item.text()
         key = [k for k, v in self.rover_camera_dict.items() if v == value][0]
 
-        result = f"Date: {date.toString('yyyy-MM-dd')}, Rover: {rover_list_item.text()}, Camera Abbreviation: {key}"
+        # Get the selected rover
+        rovers = self.rover_list.selectedItems()
+        if rovers:
+            rover = rovers[0]  # Get the first selected item
+            rover_name = rover.text()
+
+        camera = self.rover_camera_dict[key]
+        date_str = date.toString("yyyy-MM-dd")
+
+        # Build NASA API URL
+        api_key = load_api_key()
+        url = f"https://api.nasa.gov/mars-photos/api/v1/rovers/{rover_name}/photos?earth_date={date_str}&api_key={api_key}"
+
+        try:
+            response = requests.get(url, timeout=10)
+            data = response.json()
+            photos = data.get("photos", [])
+            if photos:
+
+                result = f"Found {len(photos)} photos. Example ID: {photos[0]['id']}"
+            else:
+                result = "No photos found for this selection."
+
+        except Exception as e:
+            result = f"API request failed: {e}"
+
         self.result_label.setText(result)
-        print(result)  # <-- result available in console too
-
-
-
+        print(result)

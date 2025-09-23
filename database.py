@@ -5,9 +5,11 @@ import sqlite3
 def init_db():
     conn = sqlite3.connect("apikeys.db")
     c = conn.cursor()
-    c.execute("""CREATE TABLE IF NOT EXISTS api_keys (
+    c.execute(
+        """CREATE TABLE IF NOT EXISTS api_keys (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 key TEXT NOT NULL)""")
+                 key TEXT NOT NULL)"""
+    )
     conn.commit()
     conn.close()
 
