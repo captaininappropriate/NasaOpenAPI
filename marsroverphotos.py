@@ -1,13 +1,13 @@
 from PyQt6.QtWidgets import (
     QDialog, 
-    QHBoxLayout,
     QVBoxLayout,
-    QCalendarWidget,
-    QListWidget,
-    QLabel,
-    QPushButton,
+    QHBoxLayout,
+    QCalendarWidget, 
+    QListWidget, 
+    QPushButton, 
+    QLabel
 )
-import requests
+from PyQt6.QtCore import QDate
 
 
 class MarsRoverPhotosDialog(QDialog):
@@ -15,57 +15,9 @@ class MarsRoverPhotosDialog(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle("Mars Rover Photos")
-        #self.setMinimumSize(400, 600)
 
-        # create layouts
-        h_layout = QHBoxLayout()
-        v_list_layout = QVBoxLayout() # QListQidget layout
-        v_layout = QVBoxLayout()
-
-        # create widgets
-        self.calendar = QCalendarWidget()
-        self.calendar.setFixedSize(200, 200)
-        self.camera_selection_list = QListWidget()
-        self.camera_selection_list.setFixedSize(320, 135)
-        self.rover_list = QListWidget()
-        self.rover_list.setFixedSize(320, 55)
-        self.submit_button = QPushButton("Submit")
-        self.submit_button.setFixedSize(100, 40)
-        self.results_label = QLabel("Results will go here")
-        
-        # add items to the lists
-        # rover list
-        self.rover_list.addItems(['Curiosity','Opportunity', 'Spirit'])
-        self.rover_list.currentItemChanged.connect(self.update_camera_list)
-
-        # configure the QListWidget layout
-        v_list_layout.addWidget(self.rover_list)
-        v_list_layout.addWidget(self.camera_selection_list)
-
-        # configure the primary horozontal layout
-        h_layout.addWidget(self.calendar)
-        h_layout.addLayout(v_list_layout)
-
-        # confiugre the layouts
-        v_layout.addLayout(h_layout)
-        v_layout.addWidget(self.submit_button)
-        v_layout.addWidget(self.results_label)
-        self.setLayout(v_layout)
-        
-        # initial list of items
-        self.update_camera_list()
-
-    def update_camera_list(self):
-        self.camera_selection_list.clear()
-
-        # get the current rover
-        current = self.rover_list.currentItem()
-
-        if not current:
-            return
-
-        # curiosity camera list
-        curiosity_cameras = {
+        # Dictionary for second QListWidget
+        self.rover_camera_dict = {
             "FHAZ": "Front Hazard Avoidance Camera",
             "RHAZ": "Rear Hazard Avoidance Camera",
             "MAST": "Mast Camera",
@@ -73,27 +25,81 @@ class MarsRoverPhotosDialog(QDialog):
             "MAHLI": "Mars Hand Lens Imager",
             "MARDI": "Mars Descent Imager",
             "NAVCAM": "Navigation Camera",
-        }
-
-        # opportunity & spirit camera list
-        opportunity_spirit_cameras = {
-            "FHAZ": "Front Hazard Avoidance Camera",
-            "RHAZ": "Rear Hazard Avoidance Camera",
-            "NAVCAM": "Navigation Camera",
             "PANCAM": "Panoramic Camera",
             "MINITES": "Miniature Thermal Emission Spectrometer (Mini-TES)",
         }
-        
-        # select appropriate camera list
-        # curiosity
-        if current.text() == "Curiosity":
-            for value in curiosity_cameras.values():
-                self.camera_selection_list.addItem(value)
-        else:  # "opportunity & spirit
-            for value in opportunity_spirit_cameras.values():
-                self.camera_selection_list.addItem(value)
 
+        # Layouts
+        v_layout = QVBoxLayout(self)
+        v_list_layout = QVBoxLayout(self)
+        h_layout = QHBoxLayout(self)
 
+        # Calendar widget
+        self.calendar = QCalendarWidget()
+        self.calendar.setGridVisible(True)
+        h_layout.addWidget(self.calendar)
+
+        # Rover list
+        self.rover_list = QListWidget()
+        self.rover_list.addItems(["Curiosity", "Opportunity", "Spirit"])
+        v_list_layout.addWidget(self.rover_list)
+
+        # Camera list
+        self.camera_list = QListWidget()
+        v_list_layout.addWidget(self.camera_list)
+
+        # configure layouts
+        h_layout.addLayout(v_list_layout)
+        v_layout.addLayout(h_layout)
+
+        # Button to confirm selection
+        self.confirm_btn = QPushButton("Confirm Selection")
+        v_layout.addWidget(self.confirm_btn)
+
+        # Label to show result
+        self.result_label = QLabel("Select date and items...")
+        v_layout.addWidget(self.result_label)
+
+        self.setLayout(v_layout)
+
+        # Signals
+        self.rover_list.currentItemChanged.connect(self.update_camera_list)
+        self.confirm_btn.clicked.connect(self.get_selection)
+
+    def update_camera_list(self):
+        """Update second QListWidget based on first list selection."""
+        self.camera_list.clear()
+        rover = self.rover_list.currentItem()
+        if not rover:
+            return
+
+        if rover.text() == "Curiosity":
+            keys = ["FHAZ", "RHAZ", "MAST", "CHEMCAM", "MAHLI", "MARDI", "NAVCAM"]
+        else:  # Opportunity or Spirit
+            keys = ["FHAZ", "RHAZ", "NAVCAM", "PANCAM", "MINITES"]
+
+        # Store key in QListWidget item data
+        for key in keys:
+            self.camera_list.addItem(self.rover_camera_dict[key])
+
+    def get_selection(self):
+        """Get selected values and print result."""
+        date: QDate = self.calendar.selectedDate() # type: ignore
+        rover_list_item = self.rover_list.currentItem()
+        camera_list_item = self.camera_list.currentItem()
+
+        # ensure user has select an item from both lists
+        if not rover_list_item or not camera_list_item:
+            self.result_label.setText("Please select items from both lists.")
+            return
+
+        # Find dictionary key for selected value in list2
+        value = camera_list_item.text()
+        key = [k for k, v in self.rover_camera_dict.items() if v == value][0]
+
+        result = f"Date: {date.toString('yyyy-MM-dd')}, Rover: {rover_list_item.text()}, Camera Abbreviation: {key}"
+        self.result_label.setText(result)
+        print(result)  # <-- result available in console too
 
 
 
